@@ -6,21 +6,55 @@ import {
   Tarefa,
   TaskInput,
   AddTaskButton,
-  RemoveButton,
+  RemoveButton
 } from "./styled";
 import bin from "../../assets/bin.png";
 
 export function ListaTarefas() {
+  const [lista, setLista] = useState([
+    "Estudar react",
+    "Fazer o exercicio",
+    "descansar",
+    "teste muito loko"
+  ]);
+
   const [novaTarefa, setNovaTarefa] = useState("");
 
+  const renderizarLista = lista.map((tarefa, index) => {
+    return (
+      <Tarefa key={index}>
+        <p>{tarefa}</p>
+        <RemoveButton
+        onClick={()=>removeTarefa(index)}
+        >
+          <img src={bin} alt="" width="16px" />
+        </RemoveButton>
+      </Tarefa>
+    );
+  });
 
   const onChangeTarefa = (event) => {
     setNovaTarefa(event.target.value);
   };
 
-  const adicionaTarefa = () => {};
+  const adicionaTarefa = () => {
+    const novaLista = [...lista, novaTarefa];
+    setLista(novaLista);//posso colocar o spread operator dentro do parenteses sem precisar criar o novaLista
+    setNovaTarefa("");
+  };
 
-  const removeTarefa = () => {};
+  const removeTarefa = (indexTarefa) => {
+    //Com splice
+    //const listaFiltrada = [...lista];
+    //listaFiltrada.splice(index, 1);
+
+    //Com Filter
+    const listaFiltrada = lista.filter((item, index)=>{
+      return index !== indexTarefa
+    })
+    
+    setLista(listaFiltrada);
+  };
 
   return (
     <ListaTarefasContainer>
@@ -30,18 +64,11 @@ export function ListaTarefas() {
           value={novaTarefa}
           onChange={onChangeTarefa}
         />
-        <AddTaskButton>Adicionar</AddTaskButton>
+        <AddTaskButton onClick={adicionaTarefa}>Adicionar</AddTaskButton>
       </InputContainer>
 
       <ListaContainer>
-        <ul>
-          <Tarefa>
-            <p>Nova tarefa</p>
-            <RemoveButton>
-              <img src={bin} alt="" width="16px" />
-            </RemoveButton>
-          </Tarefa>
-        </ul>
+        <ul>{renderizarLista}</ul>
       </ListaContainer>
     </ListaTarefasContainer>
   );
